@@ -1,5 +1,5 @@
 {
-  "name"             : "alirezadp10/hamrah-vas",
+  "name"             : "ahmadrezaei/HamrahVas",
   "description"      : "hamrah vas package",
   "license"          : "MIT",
   "authors"          : [
@@ -19,7 +19,7 @@
   "extra"            : {
     "laravel": {
       "providers": [
-        "Alirezadp10\\Hamrahvas\\\\HamrahvasServiceProvider"
+        "Alirezadp10\\Hamrahvas\\ServiceProvider"
       ]
     }
   },
