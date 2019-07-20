@@ -1,0 +1,27 @@
+{
+  "name"             : "alirezadp10/hamrah-vas",
+  "description"      : "hamrah vas package",
+  "license"          : "MIT",
+  "authors"          : [
+    {
+      "name" : "alirezadp10",
+      "email": "alireza74goodarzi@gmail.com"
+    }
+  ],
+  "require"          : {
+    "laravel/framework": "5.*"
+  },
+  "autoload"         : {
+    "psr-4": {
+      "Alirezadp10\\Hamrahvas\\": "src/"
+    }
+  },
+  "extra"            : {
+    "laravel": {
+      "providers": [
+        "Alirezadp10\\Hamrahvas\\\\HamrahvasServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev"
+}
