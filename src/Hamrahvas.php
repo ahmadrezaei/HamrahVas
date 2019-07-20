@@ -85,7 +85,11 @@ class Hamrahvas
 
             $json = json_decode($result, TRUE);
 
-            if ($json['status'] != 2) {
+            if (isset($json['status'])) {
+                if ($json['status'] != 2) {
+                    throw new \Exception($json['destinationResult']['statusInfo']['errorInfo']['errorDescription']);
+                }
+            } else {
                 throw new \Exception('متاسفانه عملیات با شکست همراه شد!');
             }
 
@@ -136,7 +140,11 @@ class Hamrahvas
 
             $json = json_decode($result, TRUE);
 
-            if ($json['status'] != 2 && $json['status'] != 3) {
+            if (isset($json['status'])) {
+                if ($json['status'] != 2 && $json['status'] != 3) {
+                    throw new \Exception($json['destinationResult']['statusInfo']['errorInfo']['errorDescription']);
+                }
+            } else {
                 throw new \Exception('متاسفانه عملیات با شکست همراه شد!');
             }
 
