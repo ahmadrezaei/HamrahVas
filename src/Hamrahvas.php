@@ -3,8 +3,8 @@
 namespace Alirezadp10\Hamrahvas;
 
 use Exception;
-use http\Env\Response;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 /**
  * Class HamrahVas
