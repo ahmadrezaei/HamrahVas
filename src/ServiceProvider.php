@@ -19,7 +19,7 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * Register bindings in the container.
+     * Make config publishment optional by merging the config from the package.
      *
      * @return  void
      */
@@ -27,6 +27,9 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->app->singleton(Hamrahvas::class, function ($app) {
             return new Hamrahvas(config('hamrahvas'));
+        });
+        $this->app->bind('Hamrahvas', function () {
+            return new Hamrahvas();
         });
     }
 }

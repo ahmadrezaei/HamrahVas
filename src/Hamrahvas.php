@@ -12,8 +12,8 @@ use Illuminate\Http\Request;
  */
 class Hamrahvas
 {
-    private $username;
-    private $password;
+    private static $username;
+    private static $password;
 
     public function __construct($configs)
     {
@@ -46,21 +46,18 @@ class Hamrahvas
     }
 
     /**
-     * Subscribe/Unsubscribe user to Hamrah Vas service
+     * Subscribe/Unsubscribe user to VAS service
      *
      * @param string $chargeCode
      * @param string $amount
      * @param string $requestId
      * @return array
      */
-    public function inAppCharge(Request $request, $serviceId)
+    public static function inAppCharge(Request $request, $serviceId)
     {
-        // set username and password of hamrah vas
-        $username = $this->username;
-        $password = $this->password;
-        // generate url from username and password
+        $username = self::$username;
+        $password = self::$password;
         $url = "http://79.175.138.66:8080/OTP/Push?username=$username&password=$password";
-
         $fields = [
             'cellPhoneNumber'  => $request->phoneNumber,
             'serviceId'        => $serviceId,
@@ -86,17 +83,15 @@ class Hamrahvas
             // execute post
             $result = curl_exec($ch);
 
-            // json decode result
             $json = json_decode($result, TRUE);
 
-            // check response is valid
             if (isset($json['status'])) {
-                // throw error message if response status is not 2
                 if ($json['status'] != 2) {
-                    throw new \Exception($json['destinationResult']['statusInfo']['errorInfo']['errorDescription']);
+                    if (isset($json['destinationResult']['statusInfo']['errorInfo']['errorDescription'])) {
+                        throw new \Exception($json['destinationResult']['statusInfo']['errorInfo']['errorDescription']);
+                    }
+                    throw new \Exception('متاسفانه عملیات با شکست همراه شد!');
                 }
-            } else {
-                throw new \Exception('متاسفانه عملیات با شکست همراه شد!');
             }
 
             return $json;
@@ -114,12 +109,10 @@ class Hamrahvas
      * @param string $transactionPin
      * @return array
      */
-    public function inAppChargeConfirm(Request $request, $serviceId)
+    public static function inAppChargeConfirm(Request $request, $serviceId)
     {
-        // set username and password of hamrah vas
-        $username = $this->username;
-        $password = $this->password;
-        // generate url from username and password
+        $username = self::$username;
+        $password = self::$password;
         $url = "http://79.175.138.66:8080/OTP/Charge?username=$username&password=$password";
         $fields = [
             'serviceId'        => $serviceId,
@@ -148,14 +141,13 @@ class Hamrahvas
 
             $json = json_decode($result, TRUE);
 
-            // check response is valid
             if (isset($json['status'])) {
-                // throw error message if response status is not 2 and 3
                 if ($json['status'] != 2 && $json['status'] != 3) {
-                    throw new \Exception($json['destinationResult']['statusInfo']['errorInfo']['errorDescription']);
+                    if (isset($json['destinationResult']['statusInfo']['errorInfo']['errorDescription'])) {
+                        throw new \Exception($json['destinationResult']['statusInfo']['errorInfo']['errorDescription']);
+                    }
+                    throw new \Exception('متاسفانه عملیات با شکست همراه شد!');
                 }
-            } else {
-                throw new \Exception('متاسفانه عملیات با شکست همراه شد!');
             }
 
             return $json;
