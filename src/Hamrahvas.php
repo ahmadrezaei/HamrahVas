@@ -46,7 +46,7 @@ class Hamrahvas
     }
 
     /**
-     * Subscribe/Unsubscribe user to VAS service
+     * Subscribe/Unsubscribe user to Hamrah Vas service
      *
      * @param string $chargeCode
      * @param string $amount
@@ -55,9 +55,12 @@ class Hamrahvas
      */
     public function inAppCharge(Request $request, $serviceId)
     {
+        // set username and password of hamrah vas
         $username = $this->username;
         $password = $this->password;
+        // generate url from username and password
         $url = "http://79.175.138.66:8080/OTP/Push?username=$username&password=$password";
+
         $fields = [
             'cellPhoneNumber'  => $request->phoneNumber,
             'serviceId'        => $serviceId,
@@ -83,9 +86,12 @@ class Hamrahvas
             // execute post
             $result = curl_exec($ch);
 
+            // json decode result
             $json = json_decode($result, TRUE);
 
+            // check response is valid
             if (isset($json['status'])) {
+                // throw error message if response status is not 2
                 if ($json['status'] != 2) {
                     throw new \Exception($json['destinationResult']['statusInfo']['errorInfo']['errorDescription']);
                 }
@@ -110,8 +116,10 @@ class Hamrahvas
      */
     public function inAppChargeConfirm(Request $request, $serviceId)
     {
+        // set username and password of hamrah vas
         $username = $this->username;
         $password = $this->password;
+        // generate url from username and password
         $url = "http://79.175.138.66:8080/OTP/Charge?username=$username&password=$password";
         $fields = [
             'serviceId'        => $serviceId,
@@ -140,7 +148,9 @@ class Hamrahvas
 
             $json = json_decode($result, TRUE);
 
+            // check response is valid
             if (isset($json['status'])) {
+                // throw error message if response status is not 2 and 3
                 if ($json['status'] != 2 && $json['status'] != 3) {
                     throw new \Exception($json['destinationResult']['statusInfo']['errorInfo']['errorDescription']);
                 }

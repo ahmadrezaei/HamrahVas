@@ -19,7 +19,7 @@ class ServiceProvider extends BaseServiceProvider
     }
 
     /**
-     * Make config publishment optional by merging the config from the package.
+     * Register bindings in the container.
      *
      * @return  void
      */
