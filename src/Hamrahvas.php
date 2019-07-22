@@ -37,12 +37,13 @@ class Hamrahvas
      */
     public function inAppCharge(Request $request, $serviceId)
     {
+        //09372808132
         $baseUrl = $this->baseUrl;
         $username = $this->username;
         $password = $this->password;
         $url = "$baseUrl/OTP/Push?username=$username&password=$password";
         $fields = [
-            'cellPhoneNumber'  => substr($request->phoneNumber,-9),
+            'cellPhoneNumber'  => substr($request->phoneNumber,-10),
             'serviceId'        => $serviceId,
             'chargeCodeNumber' => '0',
             'price'            => '5000',
@@ -100,7 +101,7 @@ class Hamrahvas
         $url = "$baseUrl/OTP/Charge?username=$username&password=$password";
         $fields = [
             'serviceId'        => $serviceId,
-            'cellPhoneNumber'  => substr($request->phoneNumber,-9),
+            'cellPhoneNumber'  => substr($request->phoneNumber,-10),
             'otpTransactionId' => $request->otpTransactionId,
             'transactionPIN'   => $request->pin,
             'cpUniqueToken'    => $request->cpUniqueToken,
