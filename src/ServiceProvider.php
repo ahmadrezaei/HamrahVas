@@ -2,6 +2,7 @@
 
 namespace Alirezadp10\Hamrahvas;
 
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
@@ -25,11 +26,9 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(Hamrahvas::class, function ($app) {
+        $this->app->bind(Hamrahvas::class, function ($app) {
             return new Hamrahvas(config('hamrahvas'));
         });
-        $this->app->bind('Hamrahvas', function () {
-            return new Hamrahvas();
-        });
+
     }
 }

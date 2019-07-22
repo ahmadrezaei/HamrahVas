@@ -12,8 +12,8 @@ use Illuminate\Http\Request;
  */
 class Hamrahvas
 {
-    private static $username;
-    private static $password;
+    private $username;
+    private $password;
 
     public function __construct($configs)
     {
@@ -26,38 +26,21 @@ class Hamrahvas
      *
      * @var string $url
      */
-    protected $url = 'http://10.20.9.6:8080/server.php?wsdl';
-
-    /**
-     * Send SMS to one user or group of users
-     *
-     * @param array $phoneNumbers
-     * @param array $messages
-     * @param string $chargeCode
-     * @param string $amount
-     * @param string $type
-     * @param string $requestId
-     * @return mixed
-     */
-    public function sendSMS()
-    {
-        //TODO
-        return NULL;
-    }
+    protected $baseUrl = 'http://79.175.138.66:8080';
 
     /**
      * Subscribe/Unsubscribe user to VAS service
      *
-     * @param string $chargeCode
-     * @param string $amount
-     * @param string $requestId
+     * @param \Illuminate\Http\Request $request
+     * @param int $serviceId
      * @return array
      */
-    public static function inAppCharge(Request $request, $serviceId)
+    public function inAppCharge(Request $request, $serviceId)
     {
-        $username = self::$username;
-        $password = self::$password;
-        $url = "http://79.175.138.66:8080/OTP/Push?username=$username&password=$password";
+        $baseUrl = $this->baseUrl;
+        $username = $this->username;
+        $password = $this->password;
+        $url = "$baseUrl/OTP/Push?username=$username&password=$password";
         $fields = [
             'cellPhoneNumber'  => $request->phoneNumber,
             'serviceId'        => $serviceId,
@@ -81,6 +64,7 @@ class Hamrahvas
             curl_setopt($ch, CURLOPT_POSTFIELDS, $postvars);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             // execute post
+
             $result = curl_exec($ch);
 
             $json = json_decode($result, TRUE);
@@ -104,16 +88,16 @@ class Hamrahvas
     /**
      * Confirm user subscribe
      *
-     * @param string $OTPTransactionId
-     * @param string $TXCode
-     * @param string $transactionPin
+     * @param \Illuminate\Http\Request $request
+     * @param int $serviceId
      * @return array
      */
-    public static function inAppChargeConfirm(Request $request, $serviceId)
+    public function inAppChargeConfirm(Request $request, $serviceId)
     {
-        $username = self::$username;
-        $password = self::$password;
-        $url = "http://79.175.138.66:8080/OTP/Charge?username=$username&password=$password";
+        $baseUrl = $this->baseUrl;
+        $username = $this->username;
+        $password = $this->password;
+        $url = "$baseUrl/OTP/Charge?username=$username&password=$password";
         $fields = [
             'serviceId'        => $serviceId,
             'cellPhoneNumber'  => $request->phoneNumber,
