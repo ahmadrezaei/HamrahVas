@@ -5,6 +5,7 @@ namespace Alirezadp10\Hamrahvas;
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use SoapClient;
 
 /**
  * Class HamrahVas
@@ -29,21 +30,66 @@ class Hamrahvas
     protected $baseUrl = 'http://79.175.138.66:8080';
 
     /**
+     * Send SMS to users
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param $numberList
+     * @param int $serviceId
+     * @param $ShortCode
+     * @return array
+     * @throws Exception
+     */
+    public function sendSMS(Request $request, $numberList, $serviceId, $ShortCode)
+    {
+        try {
+            // Initialize WS with the WSDL
+            $client = new SoapClient("http://79.175.138.70:8080/SMSBuffer.asmx?wsdl");
+
+            // Set request params
+            $params = [
+                "username"             => $this->username,
+                "password"             => $this->password,
+                "numberList"           => ['0' . substr($request->phoneNumber, -10)],
+                "contentList"          => [$request->textmessage],
+                "origShortCodeList"    => [$ShortCode],
+                "serviceIdList"        => [$serviceId],
+                "MsgTypeCodeList"      => [41],
+                "chargeCodeNumberList" => [0],
+            ];
+
+            // Invoke WS method (MessageListUploadWithServiceId) with the request params
+            $response = $client->__soapCall(
+                "MessageListUploadWithServiceId",
+                [$params],
+                [
+                    'uri'        => 'http://tempuri.org/',
+                    'soapaction' => '',
+                ]
+            );
+
+            return $response;
+
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    /**
      * Subscribe/Unsubscribe user to VAS service
      *
      * @param \Illuminate\Http\Request $request
      * @param int $serviceId
      * @return array
+     * @throws Exception
      */
     public function inAppCharge(Request $request, $serviceId)
     {
-        //09372808132
         $baseUrl = $this->baseUrl;
         $username = $this->username;
         $password = $this->password;
         $url = "$baseUrl/OTP/Push?username=$username&password=$password";
         $fields = [
-            'cellPhoneNumber'  => substr($request->phoneNumber,-10),
+            'cellPhoneNumber'  => substr($request->phoneNumber, -10),
             'serviceId'        => $serviceId,
             'chargeCodeNumber' => '0',
             'price'            => '5000',
@@ -101,7 +147,7 @@ class Hamrahvas
         $url = "$baseUrl/OTP/Charge?username=$username&password=$password";
         $fields = [
             'serviceId'        => $serviceId,
-            'cellPhoneNumber'  => substr($request->phoneNumber,-10),
+            'cellPhoneNumber'  => substr($request->phoneNumber, -10),
             'otpTransactionId' => $request->otpTransactionId,
             'transactionPIN'   => $request->pin,
             'cpUniqueToken'    => $request->cpUniqueToken,
