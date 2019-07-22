@@ -2,44 +2,30 @@
 
 **Install package by composer**
 
-`composer require alirezadp10/hamrah-vas`
+`composer require ahmadrezaei/hamrah-vas`
 
-**create config.php file and enter yor data:**
+## Setup
 
-```php
-$username = '';
-$password = '';
-$shortCode = '';
-$serviceKey = '';
-$chargeCode = '';
-```
+**publish the configuration file if you want to change any defaults:**
 
-**Import vendor and config.php in your files and create class instance:**
-
-```php
-require_once 'config.php';
-require_once 'vendor/autoload.php';
-
-$phoneNumber = ''; // user phone number like $_SESSION['phone']
-$mobin = new \ahmadrezaei\mobinone\MobinOne($username, $password, $shortCode, $serviceKey, $phoneNumber);
-```
+1. In `/config/app.php`, add the following to `providers`:
+  
+  ```
+  Alirezadp10\Hamrahvas\ServiceProvider::class,
+  ```
+  and the following to `aliases`:
+  ```
+  'Hamrahvas' => Alirezadp10\Hamrahvas\HamrahvasFacade::class,
+  ```
+2. Run `php artisan vendor:publish --provider="Alirezadp10\Hamrahvas\ServiceProvider"`.
 
 **Now you can use the methods:**
 
 ```php
-$mobin->sendSMS(); // send SMS to user
-$mobin->inAppCharge(); // send register request
-$mobin->inAppChargeConfirm(); // confirm register request by code
-$mobin->randomString() // create rando string
-```
-
-Examples
-===
-
-**the are 3 example page in the package, you can use the package like this files:**
-
-```php
-sample.php // for register user
-notificaion.php // for handle service notifications
-mp.php // for handle MO messages
+use Alirezadp10\Hamrahvas\HamrahvasFacade;
+.
+.
+.
+HamrahvasFacade::inAppCharge($request, $service->serviceId); // send register request
+HamrahvasFacade::inAppChargeConfirm($request, $service->serviceId); // confirm register request by code
 ```
