@@ -42,7 +42,7 @@ class Hamrahvas
         $password = $this->password;
         $url = "$baseUrl/OTP/Push?username=$username&password=$password";
         $fields = [
-            'cellPhoneNumber'  => $request->phoneNumber,
+            'cellPhoneNumber'  => substr($request->phoneNumber,-9),
             'serviceId'        => $serviceId,
             'chargeCodeNumber' => '0',
             'price'            => '5000',
@@ -100,7 +100,7 @@ class Hamrahvas
         $url = "$baseUrl/OTP/Charge?username=$username&password=$password";
         $fields = [
             'serviceId'        => $serviceId,
-            'cellPhoneNumber'  => $request->phoneNumber,
+            'cellPhoneNumber'  => substr($request->phoneNumber,-9),
             'otpTransactionId' => $request->otpTransactionId,
             'transactionPIN'   => $request->pin,
             'cpUniqueToken'    => $request->cpUniqueToken,
