@@ -32,14 +32,14 @@ class Hamrahvas
     /**
      * Send SMS to users
      *
-     * @param \Illuminate\Http\Request $request
-     * @param $numberList
+     * @param $phoneNumber
+     * @param $textMessage
      * @param int $serviceId
      * @param $ShortCode
      * @return array
      * @throws Exception
      */
-    public function sendSMS(Request $request, $numberList, $serviceId, $ShortCode)
+    public function sendSMS($phoneNumber,$textMessage, $serviceId, $ShortCode)
     {
         try {
             // Initialize WS with the WSDL
@@ -49,8 +49,8 @@ class Hamrahvas
             $params = [
                 "username"             => $this->username,
                 "password"             => $this->password,
-                "numberList"           => ['0' . substr($request->phoneNumber, -10)],
-                "contentList"          => [$request->textmessage],
+                "numberList"           => ['0' . substr($phoneNumber, -10)],
+                "contentList"          => [$textMessage],
                 "origShortCodeList"    => [$ShortCode],
                 "serviceIdList"        => [$serviceId],
                 "MsgTypeCodeList"      => [41],
