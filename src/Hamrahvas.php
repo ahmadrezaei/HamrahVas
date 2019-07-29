@@ -5,6 +5,7 @@ namespace Alirezadp10\Hamrahvas;
 use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use function json_encode;
 use SoapClient;
 
 /**
@@ -121,7 +122,7 @@ class Hamrahvas
                     if (isset($json['destinationResult']['statusInfo']['errorInfo']['errorDescription'])) {
                         throw new \Exception($json['destinationResult']['statusInfo']['errorInfo']['errorDescription']);
                     }
-                    throw new \Exception('متاسفانه عملیات با شکست همراه شد!');
+                    throw new \Exception($result);
                 }
             }
 
@@ -177,7 +178,7 @@ class Hamrahvas
                     if (isset($json['destinationResult']['statusInfo']['errorInfo']['errorDescription'])) {
                         throw new \Exception($json['destinationResult']['statusInfo']['errorInfo']['errorDescription']);
                     }
-                    throw new \Exception('متاسفانه عملیات با شکست همراه شد!');
+                    throw new \Exception($result);
                 }
             }
 
