@@ -37,11 +37,15 @@ class Hamrahvas
      * @param $textMessage
      * @param int $serviceId
      * @param $ShortCode
+     * @param int $MsgTypeCodeList
+     * @param int $chargeCodeNumberList
      * @return array
      * @throws Exception
      */
-    public function sendSMS($phoneNumber,$textMessage, $serviceId, $ShortCode)
-    {
+    public function sendSMS(
+        $phoneNumber, $textMessage, $serviceId, $ShortCode, $MsgTypeCodeList = 41,
+        $chargeCodeNumberList = 0
+    ){
         try {
             // Initialize WS with the WSDL
             $client = new SoapClient("http://79.175.138.70:8080/SMSBuffer.asmx?wsdl");
@@ -54,8 +58,8 @@ class Hamrahvas
                 "contentList"          => [$textMessage],
                 "origShortCodeList"    => [$ShortCode],
                 "serviceIdList"        => [$serviceId],
-                "MsgTypeCodeList"      => [41],
-                "chargeCodeNumberList" => [0],
+                "MsgTypeCodeList"      => [$MsgTypeCodeList],
+                "chargeCodeNumberList" => [$chargeCodeNumberList],
             ];
 
             // Invoke WS method (MessageListUploadWithServiceId) with the request params
@@ -78,25 +82,32 @@ class Hamrahvas
     /**
      * Subscribe/Unsubscribe user to VAS service
      *
-     * @param \Illuminate\Http\Request $request
+     * @param $phoneNumber
      * @param int $serviceId
+     * @param string $chargeCodeNumber
+     * @param string $price
+     * @param string $description
+     * @param string $content
      * @return array
      * @throws Exception
      */
-    public function inAppCharge(Request $request, $serviceId)
+    public function inAppCharge(
+        $serviceId, $phoneNumber, $chargeCodeNumber = '0', $price = '5000',
+        $description = 'Request Sub', $content = '1111'
+    )
     {
         $baseUrl = $this->baseUrl;
         $username = $this->username;
         $password = $this->password;
         $url = "$baseUrl/OTP/Push?username=$username&password=$password";
         $fields = [
-            'cellPhoneNumber'  => substr($request->phoneNumber, -10),
             'serviceId'        => $serviceId,
-            'chargeCodeNumber' => '0',
-            'price'            => '5000',
+            'cellPhoneNumber'  => substr($phoneNumber, -10),
+            'chargeCodeNumber' => $chargeCodeNumber,
+            'price'            => $price,
             'cpUniqueToken'    => Str::random(),
-            'description'      => 'Request Sub',
-            'content'          => '1111',
+            'description'      => $description,
+            'content'          => $content,
         ];
 
         // build the urlencoded data
@@ -136,11 +147,18 @@ class Hamrahvas
     /**
      * Confirm user subscribe
      *
-     * @param \Illuminate\Http\Request $request
      * @param int $serviceId
+     * @param $phoneNumber
+     * @param $otpTransactionId
+     * @param $pin
+     * @param $cpUniqueToken
+     * @param string $content
      * @return array
+     * @throws Exception
      */
-    public function inAppChargeConfirm(Request $request, $serviceId)
+    public function inAppChargeConfirm(
+        $serviceId, $phoneNumber, $otpTransactionId, $pin, $cpUniqueToken, $content = '1111'
+    )
     {
         $baseUrl = $this->baseUrl;
         $username = $this->username;
@@ -148,11 +166,11 @@ class Hamrahvas
         $url = "$baseUrl/OTP/Charge?username=$username&password=$password";
         $fields = [
             'serviceId'        => $serviceId,
-            'cellPhoneNumber'  => substr($request->phoneNumber, -10),
-            'otpTransactionId' => $request->otpTransactionId,
-            'transactionPIN'   => $request->pin,
-            'cpUniqueToken'    => $request->cpUniqueToken,
-            'content'          => '1111',
+            'cellPhoneNumber'  => substr($phoneNumber, -10),
+            'otpTransactionId' => $otpTransactionId,
+            'transactionPIN'   => $pin,
+            'cpUniqueToken'    => $cpUniqueToken,
+            'content'          => $content,
         ];
 
         // build the urlencoded data
