@@ -102,7 +102,7 @@ class Hamrahvas
         $url = "$baseUrl/OTP/Push?username=$username&password=$password";
         $fields = [
             'serviceId'        => $serviceId,
-            'cellPhoneNumber'  => substr($phoneNumber, -10),
+            'cellPhoneNumber'  => '0' . substr($phoneNumber, -10),
             'chargeCodeNumber' => $chargeCodeNumber,
             'price'            => $price,
             'cpUniqueToken'    => Str::random(),
