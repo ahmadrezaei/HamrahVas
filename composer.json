@@ -11,7 +11,8 @@
   "require"          : {
     "laravel/framework": "5.*",
     "ext-curl"         : "*",
-    "ext-json"         : "*"
+    "ext-json"         : "*",
+    "ext-soap"         : "*"
   },
   "autoload"         : {
     "psr-4": {
